@@ -1,0 +1,14 @@
+{
+  "name": "d-mart",
+  "version": "1.0.0",
+  "description": "Learning nodejs, express and mongodb",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon app"
+  },
+  "author": "Sayeed Afridi",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
