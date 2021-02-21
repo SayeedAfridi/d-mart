@@ -4,11 +4,12 @@
   "description": "Learning nodejs, express and mongodb",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon app"
+    "start": "nodemon server"
   },
   "author": "Sayeed Afridi",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
   }
 }

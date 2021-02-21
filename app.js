@@ -1,53 +1,24 @@
 const express = require('express')
-const fs = require('fs')
 
-const productsString = fs.readFileSync(
-  __dirname + '/dev-data/products.json',
-  'utf-8',
-)
-const products = JSON.parse(productsString)
+const morgan = require('morgan')
+
+const producstRouter = require('./routes/producstRoutes')
 
 const app = express()
 
+//01. Middlewares
+
 app.use(express.json())
 
-app.get('/api/v1/products', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: products.length,
-    data: {
-      products,
-    },
-  })
+app.use(morgan('dev'))
+
+app.use((req, res, next) => {
+  console.log('Hello from the middleware')
+  next()
 })
 
-app.post('/api/v1/products', (req, res) => {
-  return res.status(201).json({
-    message: 'Post route',
-  })
-})
+//Routes
 
-app.get('/api/v1/products/:id', (req, res) => {
-  const id = +req.params.id
+app.use('/api/v1/products', producstRouter)
 
-  const product = products.find((p) => p.id === id)
-  if (!product) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'Product not found!',
-    })
-  }
-  return res.status(200).json({
-    status: 'success',
-    results: 1,
-    data: {
-      product,
-    },
-  })
-})
-
-const port = 1080
-
-app.listen(port, () => {
-  console.log(`App running on port ${port}`)
-})
+module.exports = app
