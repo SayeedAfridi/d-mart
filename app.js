@@ -3,6 +3,7 @@ const express = require('express')
 const morgan = require('morgan')
 
 const producstRouter = require('./routes/producstRoutes')
+const userRouter = require('./routes/userRoutes')
 
 const app = express()
 
@@ -20,5 +21,6 @@ app.use((req, res, next) => {
 //Routes
 
 app.use('/api/v1/products', producstRouter)
+app.use('/api/v1/users', userRouter)
 
 module.exports = app
