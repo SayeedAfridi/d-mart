@@ -6,6 +6,27 @@ const productsString = fs.readFileSync(
 )
 const products = JSON.parse(productsString)
 
+exports.checkId = (req, res, next, val) => {
+  if (isNaN(+val)) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid id!',
+    })
+  }
+  next()
+}
+
+exports.checkBody = (req, res, next) => {
+  const body = req.body
+  if (!body.name || !body.price) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Product should contain name and price!',
+    })
+  }
+  next()
+}
+
 exports.getAllProducts = (req, res) => {
   res.status(200).json({
     status: 'success',
