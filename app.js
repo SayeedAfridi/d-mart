@@ -10,12 +10,14 @@ const app = express()
 //01. Middlewares
 
 app.use(express.json())
+app.use(express.static('./public'))
 
-if (process.env.NODE_ENV === 'devlopment') {
+if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
 
 app.use((req, res, next) => {
+  // eslint-disable-next-line no-console
   console.log('Hello from the middleware')
   next()
 })
