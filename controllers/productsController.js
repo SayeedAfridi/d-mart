@@ -1,69 +1,85 @@
-const fs = require('fs')
+const Product = require('../models/Product')
 
-const productsString = fs.readFileSync(
-  __dirname + '/../dev-data/products.json',
-  'utf-8',
-)
-const products = JSON.parse(productsString)
-
-exports.checkId = (req, res, next, val) => {
-  if (isNaN(+val)) {
-    res.status(404).json({
-      status: 'fail',
-      message: 'Invalid id!',
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+    res.status(200).json({
+      status: 'Success',
+      results: products.length,
+      data: {
+        products,
+      },
     })
-  }
-  next()
-}
-
-exports.checkBody = (req, res, next) => {
-  const body = req.body
-  if (!body.name || !body.price) {
+  } catch (error) {
     res.status(400).json({
       status: 'fail',
-      message: 'Product should contain name and price!',
+      message: error,
     })
   }
-  next()
 }
 
-exports.getAllProducts = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: products.length,
-    data: {
-      products,
-    },
-  })
-}
-
-exports.createProduct = (req, res) => {
-  return res.status(201).json({
-    message: 'Post route',
-  })
-}
-
-exports.getProduct = (req, res) => {
-  const id = +req.params.id
-
-  const product = products.find((p) => p.id === id)
-  if (!product) {
-    return res.status(404).json({
-      status: 'failed',
-      message: 'Product not found!',
+exports.createProduct = async (req, res) => {
+  try {
+    const product = new Product(req.body)
+    const doc = await product.save()
+    res.status(201).json({
+      status: 'Success',
+      data: {
+        product: doc,
+      },
+    })
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error,
     })
   }
-  return res.status(200).json({
-    status: 'success',
-    results: 1,
-    data: {
-      product,
-    },
-  })
 }
 
-exports.updateProduct = (req, res) => {
-  res.status(200).json({ message: 'Updated content here!' })
+exports.getProduct = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id)
+    //db.products.find({_id: req.params.id})
+
+    if (!product) {
+      res.status(400).json({
+        status: 'fail',
+        message: 'Product not found!',
+      })
+    }
+
+    res.status(200).json({
+      status: 'Success',
+      data: {
+        product,
+      },
+    })
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error,
+    })
+  }
+}
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    })
+    res.status(202).json({
+      status: 'Success',
+      data: {
+        product,
+      },
+    })
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error,
+    })
+  }
 }
 
 exports.deleteProduct = (req, res) => {
